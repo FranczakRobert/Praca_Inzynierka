@@ -1,2 +1,2 @@
-idf_component_register(SRCS "/src/led_blinker.cpp"
+idf_component_register(SRCS "/src/wifi_driver.cpp"
                     INCLUDE_DIRS "incl")
