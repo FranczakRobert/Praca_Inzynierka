@@ -6,6 +6,7 @@
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include "esp_log.h"
 
 #define BLINK_GPIO GPIO_NUM_2
 
@@ -17,6 +18,7 @@ public:
 private:
     void led_ON();
     void led_OFF();
+    void configure_led(void);
 };
 
 #endif // LED_BLINK_HPP
