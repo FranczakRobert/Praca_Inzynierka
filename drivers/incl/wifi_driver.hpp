@@ -12,7 +12,7 @@ class WifiDriver : public Driver {
 
     public:
     WifiDriver();
-    virtual ~WifiDriver();
+    ~WifiDriver();
 
     int start();
 
