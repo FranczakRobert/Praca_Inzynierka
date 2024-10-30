@@ -3,6 +3,7 @@
 
 class Driver {
     public:
+    virtual ~Driver() {};
     virtual int start() = 0;
 
     private:
