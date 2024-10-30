@@ -5,6 +5,8 @@
 
 extern "C" void app_main(void) {
 
-    WifiDriver wifi = WifiDriver();
-    wifi.start();
+    Driver *wifi = new WifiDriver();
+    wifi->start();
+
+    delete wifi;
 }
