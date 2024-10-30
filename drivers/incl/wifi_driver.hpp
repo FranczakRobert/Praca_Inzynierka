@@ -1,14 +1,14 @@
 #ifndef WIFI_HPP
 #define WIFI_HPP
 
-#include <iostream>
 #include "driver_abstract.hpp"
+#include <iostream>
 
 class WifiDriver : public Driver {
 
     public:
     WifiDriver();
-    virtual ~WifiDriver();
+    ~WifiDriver();
 
     int start();
 
