@@ -1,6 +1,14 @@
-# The following five lines of boilerplate have to be in your project's
-# CMakeLists in this exact order for cmake to work correctly
 cmake_minimum_required(VERSION 3.16)
 
-include($ENV{IDF_PATH}/tools/cmake/project.cmake)
+# Ustal nazwę projektu
 project(main)
+
+# Ustaw standard C++
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Dodaj wszystkie pliki źródłowe do projektu
+add_executable(main main/main.cpp drivers/src/wifi_driver.cpp)
+
+# Dodaj katalogi z plikami nagłówkowymi
+target_include_directories(main PRIVATE drivers/incl)

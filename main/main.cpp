@@ -3,7 +3,7 @@
 #include "wifi_driver.hpp"
 
 
-extern "C" void app_main(void) {
+int main(void) {
 
     WifiDriver wifi = WifiDriver();
     wifi.start();

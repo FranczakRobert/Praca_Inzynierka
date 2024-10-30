@@ -1,9 +1,6 @@
 #include "wifi_driver.hpp"
 #include "driver_abstract.hpp"
 
-const char* TAG = "WifiDriver";
-
-
 WifiDriver::WifiDriver() {
     init();
 }
@@ -13,16 +10,16 @@ WifiDriver::~WifiDriver() {
 }
 
 int WifiDriver::init() {
-    ESP_LOGI(TAG, "Initialized successfully");
+    std::cout << "Wifi INIT" << std::endl;
     return 0;
 }
 
 int WifiDriver::deinit() {
-    ESP_LOGI(TAG, "Initialized successfully");
+    std::cout << "Wifi DEINIT" << std::endl;
     return 0;
 }
 
 int WifiDriver::start() {
-    ESP_LOGI(TAG, "Start successfully");
+    std::cout << "Wifi START" << std::endl;
     return 0;
 }
