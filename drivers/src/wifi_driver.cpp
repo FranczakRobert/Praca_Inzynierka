@@ -49,6 +49,7 @@ int WifiDriver::init() {
 
 int WifiDriver::deinit() {
     ESP_LOGI(TAG, "Deinicialized successfully");
+    ESP_ERROR_CHECK(esp_wifi_deinit());
     return 0;
 }
 
@@ -70,7 +71,7 @@ void WifiDriver::wifi_connection() {
     ESP_ERROR_CHECK(esp_wifi_start());
     vTaskDelay(2000 / portTICK_PERIOD_MS); 
     ESP_ERROR_CHECK(esp_wifi_connect());
-
+    
 }
 
 void WifiDriver::wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id,void *event_data){
