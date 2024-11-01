@@ -1,11 +1,5 @@
 #include "led_driver.hpp"
 
-#define GPIO_ESP_PIN_OUT GPIO_NUM_2 
-#define LED_ON  1
-#define LED_OFF 0
-
-const static char* TAG = "LED";
-
 Led::Led(){
     init();
 }
@@ -14,7 +8,7 @@ Led::~Led() {
     deinit();
 }
 
-int Led::start()
+ErrorCode Led::start()
 {
     for(int i = 0; i < 2; i++) {
         gpio_set_level(GPIO_ESP_PIN_OUT,1);
@@ -22,27 +16,27 @@ int Led::start()
         gpio_set_level(GPIO_ESP_PIN_OUT,0);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
-    return 0;
+    return E_OK;
 }
 
-int Led::turn_led_wifi_on()
+ErrorCode Led::turn_led_wifi_on()
 {
-    gpio_set_level(GPIO_ESP_PIN_OUT,LED_ON);
-    return 0;
+    gpio_set_level(GPIO_ESP_PIN_OUT,static_cast<uint32_t>(LedState::ON));
+    return E_OK;
 }
 
-int Led::turn_led_wifi_off()
+ErrorCode Led::turn_led_wifi_off()
 {
-    gpio_set_level(GPIO_ESP_PIN_OUT,LED_OFF);
-    return 0;
+    gpio_set_level(GPIO_ESP_PIN_OUT,static_cast<uint32_t>(LedState::OFF));
+    return E_OK;
 }
 
-int Led::init() {
+ErrorCode Led::init() {
     gpio_set_direction(GPIO_ESP_PIN_OUT,GPIO_MODE_OUTPUT);
-    return 0;
+    return E_OK;
 }
 
-int Led::deinit() {
+ErrorCode Led::deinit() {
     gpio_reset_pin(GPIO_ESP_PIN_OUT);
-    return 0;
+    return E_OK;
 }

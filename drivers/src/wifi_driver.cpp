@@ -2,14 +2,10 @@
 
 #define EXAMPLE_ESP_MAXIMUM_RETRY  5
 
-static const char* TAG = "WifiDriver";
-int retry_num=0;
-Led *wifi_led = nullptr;
-
-
 WifiDriver::WifiDriver(Led *led)
 {
     wifi_led = led;
+    retry_num = 0;
     init();
 }
 
@@ -19,7 +15,7 @@ WifiDriver::~WifiDriver()
     ESP_ERROR_CHECK(nvs_flash_erase());
 }
 
-int WifiDriver::init() {
+ErrorCode WifiDriver::init() {
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());
@@ -37,27 +33,27 @@ int WifiDriver::init() {
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT,
                                                ESP_EVENT_ANY_ID,
                                                &WifiDriver::wifi_event_handler,
-                                               NULL));
+                                               this));
 
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT,
                                                IP_EVENT_STA_GOT_IP,
                                                &WifiDriver::wifi_event_handler,
-                                               NULL));
-    return 0;
+                                               this));
+    return E_OK;
 }
 
-int WifiDriver::deinit() {
+ErrorCode WifiDriver::deinit() {
     ESP_LOGI(TAG, "Deinicialized successfully");
     ESP_ERROR_CHECK(esp_wifi_deinit());
-    return 0;
+    return E_OK;
 }
 
-int WifiDriver::start() {
+ErrorCode WifiDriver::start() {
     wifi_connection();
-    return 0;
+    return E_OK;
 }
 
-void WifiDriver::wifi_connection() {
+ErrorCode WifiDriver::wifi_connection() {
     wifi_config_t wifi_configuration;
     memset(&wifi_configuration, 0, sizeof(wifi_config_t));
     strcpy((char*)wifi_configuration.sta.ssid, NAME);
@@ -70,10 +66,12 @@ void WifiDriver::wifi_connection() {
     ESP_ERROR_CHECK(esp_wifi_start());
     vTaskDelay(2000 / portTICK_PERIOD_MS); 
     ESP_ERROR_CHECK(esp_wifi_connect());
-    
+    return E_OK;
 }
 
 void WifiDriver::wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id,void *event_data){
+
+    WifiDriver* wifi_driver = static_cast<WifiDriver*>(event_handler_arg);
 
     switch (event_id){
         case WIFI_EVENT_STA_START:
@@ -82,25 +80,25 @@ void WifiDriver::wifi_event_handler(void *event_handler_arg, esp_event_base_t ev
     
         case WIFI_EVENT_STA_CONNECTED:
             ESP_LOGI(TAG, "WiFi CONNECTED");
-            if(nullptr != wifi_led) {
-                wifi_led->turn_led_wifi_on();
+            if(nullptr != wifi_driver->wifi_led) {
+                wifi_driver->wifi_led->turn_led_wifi_on();
             }
             else {
-                ESP_LOGV(TAG,"LED IS NULL")
+                ESP_LOGV(TAG,"LED IS NULL");
             }
             break;
 
         case WIFI_EVENT_STA_DISCONNECTED:
             ESP_LOGI(TAG, "WiFi lost connection");
-            if(nullptr != wifi_led) {
-                wifi_led->turn_led_wifi_off();
+            if(nullptr != wifi_driver->wifi_led) {
+                wifi_driver->wifi_led->turn_led_wifi_off();
             }
             else {
-                ESP_LOGV(TAG,"LED IS NULL")
+                ESP_LOGV(TAG,"LED IS NULL");
             }
-            if(retry_num< EXAMPLE_ESP_MAXIMUM_RETRY){
+            if(wifi_driver->retry_num< EXAMPLE_ESP_MAXIMUM_RETRY){
                 esp_wifi_connect();
-                retry_num++;
+                wifi_driver->retry_num++;
                 ESP_LOGI(TAG, "Retrying to Connect...");
             }
             break;

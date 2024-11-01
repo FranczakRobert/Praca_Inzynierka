@@ -22,14 +22,18 @@ class WifiDriver : public Driver {
     WifiDriver(Led* led);
     ~WifiDriver();
 
-    int start();
+    ErrorCode start();
 
     private:
+    int retry_num;
+    Led *wifi_led;
+    static constexpr char TAG[] = "WifiDriver";
+
     static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id,void *event_data);
-    int init();
-    int deinit();
-    void wifi_connection();
-    
+    ErrorCode init();
+    ErrorCode deinit();
+    ErrorCode wifi_connection();
+
 };
 
 #endif // WIFI_HPP

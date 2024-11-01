@@ -6,15 +6,16 @@
 #include "esp_log.h"
 #include "esp_system.h"
 
+#include "error_code.hpp"
 
 class Driver {
     public:
     virtual ~Driver() {};
-    virtual int start() = 0;
+    virtual ErrorCode start() = 0;
 
     private:
-    virtual int init() = 0;
-    virtual int deinit() = 0;
+    virtual ErrorCode init() = 0;
+    virtual ErrorCode deinit() = 0;
 };
 
 #endif // DRIVER
