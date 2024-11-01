@@ -5,7 +5,6 @@
 
 #include <stdio.h> //for basic printf commands
 #include <string.h> //for handling strings
-#include "esp_system.h" //esp_init funtions esp_err_t 
 #include "esp_wifi.h" //esp_wifi_init functions and wifi operations
 #include "esp_event.h" //for wifi event
 #include "nvs_flash.h" //non volatile storage
@@ -13,15 +12,17 @@
 #include "lwip/sys.h" //system applications for light weight ip apps
 
 #include "driver_abstract.hpp"
+#include "led_driver.hpp"
+#include "driver_abstract.hpp"
+#include "wifi_config.hpp"
 
 class WifiDriver : public Driver {
 
     public:
-    WifiDriver();
+    WifiDriver(Led* led);
     ~WifiDriver();
 
     int start();
-
 
     private:
     static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id,void *event_data);

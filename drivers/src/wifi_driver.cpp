@@ -1,23 +1,22 @@
 #include "wifi_driver.hpp"
-#include "driver_abstract.hpp"
-#include "wifi_config.hpp"
-
-const char* TAG = "WifiDriver";
 
 #define EXAMPLE_ESP_MAXIMUM_RETRY  5
 
-
+static const char* TAG = "WifiDriver";
 int retry_num=0;
+Led *wifi_led = nullptr;
 
 
-WifiDriver::WifiDriver() {
+WifiDriver::WifiDriver(Led *led)
+{
+    wifi_led = led;
     init();
 }
 
-WifiDriver::~WifiDriver() {
+WifiDriver::~WifiDriver()
+{
     deinit();
     ESP_ERROR_CHECK(nvs_flash_erase());
-
 }
 
 int WifiDriver::init() {
@@ -83,11 +82,22 @@ void WifiDriver::wifi_event_handler(void *event_handler_arg, esp_event_base_t ev
     
         case WIFI_EVENT_STA_CONNECTED:
             ESP_LOGI(TAG, "WiFi CONNECTED");
+            if(nullptr != wifi_led) {
+                wifi_led->turn_led_wifi_on();
+            }
+            else {
+                ESP_LOGV(TAG,"LED IS NULL")
+            }
             break;
 
         case WIFI_EVENT_STA_DISCONNECTED:
             ESP_LOGI(TAG, "WiFi lost connection");
-            
+            if(nullptr != wifi_led) {
+                wifi_led->turn_led_wifi_off();
+            }
+            else {
+                ESP_LOGV(TAG,"LED IS NULL")
+            }
             if(retry_num< EXAMPLE_ESP_MAXIMUM_RETRY){
                 esp_wifi_connect();
                 retry_num++;
