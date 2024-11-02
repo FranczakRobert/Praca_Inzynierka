@@ -56,7 +56,7 @@ ErrorCode Led::led_wifi_connecting_state()
         gpio_set_level(GPIO_ESP_PIN_OUT, static_cast<uint32_t>(LedState::OFF));
         vTaskDelay(500 / portTICK_PERIOD_MS);
     }
-    gpio_set_level(GPIO_ESP_PIN_OUT, static_cast<uint32_t>(LedState::ON));
+    gpio_set_level(GPIO_ESP_PIN_OUT, static_cast<uint32_t>(LedState::OFF));
 
     return E_OK;
 }

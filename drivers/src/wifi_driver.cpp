@@ -82,6 +82,8 @@ void WifiDriver::wifi_event_handler(void *event_handler_arg, esp_event_base_t ev
         case WIFI_EVENT_STA_CONNECTED:
             ESP_LOGI(TAG, "WiFi CONNECTED");
             errorCode = wifi_driver->wifi_led.stop();
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
+            wifi_driver->wifi_led.turn_led_wifi_on();
             break;
 
         case WIFI_EVENT_STA_DISCONNECTED:
