@@ -1,3 +1,3 @@
 /build
 .vscode
-/drivers/incl/wifi_config.hpp
+/drivers/driver_utils/wifi_config.hpp
