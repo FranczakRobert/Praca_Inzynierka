@@ -19,14 +19,14 @@
 class WifiDriver : public Driver {
 
     public:
-    WifiDriver(Led* led);
+    WifiDriver(Led& led);
     ~WifiDriver();
 
     ErrorCode start();
 
     private:
     int retry_num;
-    Led *wifi_led;
+    Led wifi_led;
     static constexpr char TAG[] = "WifiDriver";
 
     static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id,void *event_data);

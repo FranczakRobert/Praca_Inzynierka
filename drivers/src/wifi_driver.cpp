@@ -2,7 +2,7 @@
 
 #define EXAMPLE_ESP_MAXIMUM_RETRY  5
 
-WifiDriver::WifiDriver(Led *led)
+WifiDriver::WifiDriver(Led& led)
 {
     wifi_led = led;
     retry_num = 0;
@@ -80,23 +80,14 @@ void WifiDriver::wifi_event_handler(void *event_handler_arg, esp_event_base_t ev
     
         case WIFI_EVENT_STA_CONNECTED:
             ESP_LOGI(TAG, "WiFi CONNECTED");
-            if(nullptr != wifi_driver->wifi_led) {
-                wifi_driver->wifi_led->turn_led_wifi_on();
-            }
-            else {
-                ESP_LOGV(TAG,"LED IS NULL");
-            }
+            wifi_driver->wifi_led.turn_led_wifi_on();
             break;
 
         case WIFI_EVENT_STA_DISCONNECTED:
             ESP_LOGI(TAG, "WiFi lost connection");
-            if(nullptr != wifi_driver->wifi_led) {
-                wifi_driver->wifi_led->turn_led_wifi_off();
-            }
-            else {
-                ESP_LOGV(TAG,"LED IS NULL");
-            }
-            if(wifi_driver->retry_num< EXAMPLE_ESP_MAXIMUM_RETRY){
+            wifi_driver->wifi_led.turn_led_wifi_off();
+
+            if(EXAMPLE_ESP_MAXIMUM_RETRY > wifi_driver->retry_num){
                 esp_wifi_connect();
                 wifi_driver->retry_num++;
                 ESP_LOGI(TAG, "Retrying to Connect...");
