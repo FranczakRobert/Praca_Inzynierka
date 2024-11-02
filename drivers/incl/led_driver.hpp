@@ -11,11 +11,14 @@ enum class LedState {
 
 class Led : public Driver {
     public:
+
     Led();
     ~Led();
     ErrorCode start();
+    ErrorCode stop();
     ErrorCode turn_led_wifi_on();
     ErrorCode turn_led_wifi_off();
+    ErrorCode led_wifi_connecting_state();
 
     private:
     static constexpr gpio_num_t GPIO_ESP_PIN_OUT = GPIO_NUM_2;
@@ -23,6 +26,8 @@ class Led : public Driver {
 
     ErrorCode init();
     ErrorCode deinit();
+    static void led_wifi_connecting_state_wrapper(void* _this);
+    volatile bool stopTask;  
 };
 
 #endif 

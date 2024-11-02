@@ -2,10 +2,10 @@
 
 #define EXAMPLE_ESP_MAXIMUM_RETRY  5
 
-WifiDriver::WifiDriver(Led& led)
+WifiDriver::WifiDriver(Led& led) : wifi_led(led)
 {
-    wifi_led = led;
     retry_num = 0;
+    led.start();
     init();
 }
 
@@ -72,6 +72,7 @@ ErrorCode WifiDriver::wifi_connection() {
 void WifiDriver::wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id,void *event_data){
 
     WifiDriver* wifi_driver = static_cast<WifiDriver*>(event_handler_arg);
+    ErrorCode errorCode = E_NOT_OK;
 
     switch (event_id){
         case WIFI_EVENT_STA_START:
@@ -80,17 +81,19 @@ void WifiDriver::wifi_event_handler(void *event_handler_arg, esp_event_base_t ev
     
         case WIFI_EVENT_STA_CONNECTED:
             ESP_LOGI(TAG, "WiFi CONNECTED");
-            wifi_driver->wifi_led.turn_led_wifi_on();
+            errorCode = wifi_driver->wifi_led.stop();
             break;
 
         case WIFI_EVENT_STA_DISCONNECTED:
             ESP_LOGI(TAG, "WiFi lost connection");
-            wifi_driver->wifi_led.turn_led_wifi_off();
 
             if(EXAMPLE_ESP_MAXIMUM_RETRY > wifi_driver->retry_num){
                 esp_wifi_connect();
                 wifi_driver->retry_num++;
                 ESP_LOGI(TAG, "Retrying to Connect...");
+            }
+            else {
+                errorCode = wifi_driver->wifi_led.turn_led_wifi_off();
             }
             break;
 
@@ -105,4 +108,6 @@ void WifiDriver::wifi_event_handler(void *event_handler_arg, esp_event_base_t ev
         default:
             break;
     }
+    ESP_LOGD(TAG,"Error Code nr: %d\n",errorCode);
+    
 }
